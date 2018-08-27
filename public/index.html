@@ -1,10 +1,22 @@
 <!doctype html>
 <html>
 <head>
-    <title></title>
+    <title>Image Board</title>
 </head>
 <body>
+    <div class="imageboard-wrap" v-if='images.length > 0'>
+        <div v-for='image in images'class="">
+            <img  :src="image.url" alt="">
+            <p>{{image.description}}</p>
+        </div>
+
+
+    </div>
+
     <script src="/js/vue.js"></script>
     <script src="/js/axios.min.js"></script>
+    <script type="text/javascript" src='js/script.js'>
+
+    </script>
 </body>
 </html>
