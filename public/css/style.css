@@ -1,0 +1,20 @@
+body {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    padding: 2% 5%;
+}
+
+img {
+    height: 300px;
+    width: 300px;
+    object-fit: cover;
+}
+
+.img-p-unit {
+    margin-right: 2%;
+}

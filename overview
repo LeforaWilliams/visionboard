@@ -1,0 +1,7 @@
+Overview,
+
+> VUE script file cannot talk to the database directly becuase it's not backend. Thus, we use axios to take the request from vue to our server. The server then goes to the database and returns the data to axios which takes it back to VUE script file with res.json (captured in the then from the axios request).
+
+v-model connects our html to the data object in our script.js file
+
+IN vue we need an api that sends the file data to the server - FORM DATA

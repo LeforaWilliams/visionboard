@@ -1,18 +1,33 @@
 <!doctype html>
 <html>
 <head>
-    <title>Image Board</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Imageboard</title>
 </head>
 <body>
-    <div class="imageboard-wrap" v-if='images.length > 0'>
-        <div v-for='image in images'class="">
+
+    <div class="imageboard-wrap flex-container" v-if='images.length > 0'>
+        <h1>Imageboard</h1>
+        <!-- FOR IMAGE UPLOAD -->
+        <form class="image-upload-form">
+            <input v-model ='form.title' type="text" name="title" placeholder="Title" value="">
+
+            <input v-model ='form.description' type="text" name="description" value="" placeholder="Description">
+
+            <input v-model ='form.username' type="text" name="username" value="" placeholder="Username">
+
+            <input type="file" accept='image/*'>
+            <button v-on:click='uploadFile' type="button" name="upload-button">Upload</button>
+
+        </form>
+        <div v-for='image in images'class="img-p-unit">
             <img  :src="image.url" alt="">
-            <p>{{image.description}}</p>
+            <p>{{image.title}}</p>
         </div>
 
 
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="/js/vue.js"></script>
     <script src="/js/axios.min.js"></script>
     <script type="text/javascript" src='js/script.js'>
