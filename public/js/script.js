@@ -1,4 +1,58 @@
 (function() {
+    Vue.component("modal", {
+        // Vue components have no el to specifx to work with
+        //data has to be a function here otherwise it will affect al of them at once
+        data: function() {
+            return {
+                image: {}
+            };
+        },
+        mounted: function() {
+            var modal = this;
+            axios.get("/image/" + this.id).then(function(res) {
+                modal.image = res.data;
+            });
+        },
+        props: ["id"],
+        template: "#modal-template",
+        methods: {
+            hideModal: function() {
+                this.$emit("close");
+            }
+        }
+    });
+
+    Vue.component("comments", {
+        data: function() {
+            return {
+                comments: [],
+                form: {
+                    comment: "",
+                    username: ""
+                }
+            };
+        },
+        props: ["id"],
+        template: "#comments-template",
+        mounted: function() {
+            var component = this;
+            axios.get("/comments/" + this.id).then(function(res) {
+                component.comments = res.data;
+            });
+        },
+        methods: {
+            saveComment: function(e) {
+                e.preventDefault();
+                var component = this;
+                axios
+                    .post("/comments/" + this.id, this.form)
+                    .then(function(res) {
+                        component.comments.unshift(res.data[0]);
+                    });
+            }
+        }
+    });
+
     var app = new Vue({
         el: ".imageboard-wrap",
         data: {
@@ -7,16 +61,28 @@
                 title: "",
                 username: "",
                 description: ""
-            }
+            },
+            show: null
         },
         mounted: function() {
+            // When the modal component mounts, at least one ajax request will have to be made.
             // this is making a request to the server so the server can talk to the db
-            axios.get("/home").then(function(res) {
+            axios.get("/images").then(function(res) {
                 app.images = res.data;
             });
         },
 
         methods: {
+            hide: function() {
+                this.show = null;
+            },
+            showImage: function(imageSerialId) {
+                // console.log(
+                //     "CLICKED ON THE IMAGE AND RETRIEVED THE IMAGE SERIAL ID",
+                //     imageSerialId
+                // );
+                this.show = imageSerialId;
+            },
             uploadFile: function(e) {
                 e.preventDefault();
                 // console.log("vue instance", this.form);

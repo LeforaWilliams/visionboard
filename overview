@@ -5,3 +5,16 @@ Overview,
 v-model connects our html to the data object in our script.js file
 
 IN vue we need an api that sends the file data to the server - FORM DATA
+
+class (ES6)
+> new way of creating constructors, can declare methods in the constructor class without having to separately declaring methods on the prototype
+
+
+Inheritance
+    > syntax --> class Pikachu extends Pokemon {}
+    >super keyword runs the constructor of the parent. However, the child needs a constructor declaration becuase we can on ly call super inside of a constructor
+    >the constructor of the parent is the only thing that is not automatically inherited. You have to run the constructur and run super in side of it
+    >if you do not want to pass a method to the child you can use the keyword STATIC to prevent inheritance
+
+Get and Set Keywords
+    >if you use get and set keywords before a function you don't have to run them like a normal function but you can call them without the paranthese, you call them like a property of an object

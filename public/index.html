@@ -2,12 +2,12 @@
 <html>
 <head>
     <link rel="stylesheet" href="/css/style.css">
-    <title>Imageboard</title>
+    <title>Visionboard</title>
 </head>
 <body>
 
     <div class="imageboard-wrap flex-container" v-if='images.length > 0'>
-        <h1>Imageboard</h1>
+        <h1>Visionboard</h1>
         <!-- FOR IMAGE UPLOAD -->
         <form class="image-upload-form">
             <input v-model ='form.title' type="text" name="title" placeholder="Title" value="">
@@ -21,12 +21,46 @@
 
         </form>
         <div v-for='image in images'class="img-p-unit">
-            <img  :src="image.url" alt="">
+            <img  :src="image.url" alt="" v-on:click='showImage(image.id)'>
             <p>{{image.title}}</p>
+
         </div>
+        <modal :id='show' v-if="show" v-on:close='hide'></modal>
 
 
     </div>
+
+<script id='modal-template' type="text/template">
+    <div id='modal-outer'>
+    	<h1>This is the script for the modal component!</h1>
+        <p  v-on:click='hideModal'> c l o s e </p>
+        <p>{{image.title}}</p>
+        <img  :src='image.url'>
+        <p>{{image.description}}</p>
+        <p>Posted on: {{image.created_at}} by {{image.username}} </p>
+        <comments :id='id'></comments>
+    </div>
+</script>
+
+<script id='comments-template' type="text/template">
+    <div>
+        <section id='comment-section-wrap'>
+            <h2>Comments</h2>
+            <!-- <form> -->
+                <!-- <input  v-model='form.comment' name='comment' placeholder="Comment"> -->
+                <textarea v-model='form.comment' name="text" cols="35" rows="4"></textarea>
+                <input v-model='form.username' name='username' placeholder="Username">
+                <button @click='saveComment'>Sumbit</button>
+            <!-- </form> -->
+                <section id='comment-display' v-for='comment in comments'>
+                    	<p>{{comment.comment}}</p>
+                        <p>{{comment.username}}</p>
+
+                </section>
+        </section>
+    </div>
+</script>
+
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="/js/vue.js"></script>
     <script src="/js/axios.min.js"></script>

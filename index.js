@@ -1,15 +1,16 @@
 const express = require("express");
 const app = express();
-const { getImages, saveFile } = require("./dbRequests");
-const bodyParser = require("body-parser");
+const {
+    getImages,
+    saveFile,
+    getModalImage,
+    saveComment,
+    getComments
+} = require("./dbRequests");
 const s3 = require("./s3.js");
 const config = require("./config.json");
 
-app.use(
-    require("body-parser").urlencoded({
-        extended: false
-    })
-);
+app.use(require("body-parser").json());
 
 // BOILERPLATE FOR IMAGE UPLOAD
 const multer = require("multer");
@@ -37,7 +38,7 @@ let uploader = multer({
 //END OF BOILERPLATE FOR IMAGE UPLOAD
 app.use(express.static("./public"));
 
-app.get("/home", (req, res) => {
+app.get("/images", (req, res) => {
     //make request.then send it back to vue
     getImages().then(function(data) {
         res.json(data.rows);
@@ -45,15 +46,56 @@ app.get("/home", (req, res) => {
 });
 
 app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
-    console.log("POST / UPLOAD IN SERVER", req.file);
     saveFile(
         config.s3Url + req.file.filename,
         req.body.username,
         req.body.title,
         req.body.description
-    ).then(function(data) {
-        res.json(data.rows);
-    });
+    )
+        .then(function(data) {
+            res.json(data.rows);
+        })
+        .catch(function(err) {
+            console.log("ERROR FROM CATCH IN UPLOAD SERVER ROUTE: ", err);
+            res.sendStatus(500);
+        });
+});
+
+app.get("/image/:id", (req, res) => {
+    getModalImage(req.params.id)
+        .then(function(image) {
+            res.json(image.rows[0]);
+        })
+        .catch(function(err) {
+            console.log(
+                "ERROR FROM CATCH IN GET IMAGE FOR MODAL ROUTE ON SERVER",
+                err
+            );
+            res.sendStatus(500);
+        });
+});
+
+app.post("/comments/:id", (req, res) => {
+    console.log("IMAGE ID IN COMMENTS POST ROUTE- SERVER", req.params.id);
+    saveComment(req.params.id, req.body.comment, req.body.username)
+        .then(function(commentInfo) {
+            res.json(commentInfo.rows);
+        })
+        .catch(function(err) {
+            console.log("ERROR IN COMMENTS POST ROUTE ON SERVER: ", err);
+            res.sendStatus(500);
+        });
+});
+
+app.get("/comments/:id", (req, res) => {
+    getComments(req.params.id)
+        .then(function(comments) {
+            res.json(comments.rows);
+        })
+        .catch(function(err) {
+            console.log("ERROR IN GET COMMENTS ON SERVER", err);
+            res.sendStatus(500);
+        });
 });
 
 app.listen(8080, () => console.log(`I'm listening`));
