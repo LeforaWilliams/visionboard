@@ -1,13 +1,17 @@
 body {
     margin: 0;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .flex-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 2% 5%;
+    justify-content: center;
+    /* padding: 2% 14%; */
+
+    /* padding: 2% 12%; */
 }
 
 img {
@@ -18,13 +22,12 @@ img {
 }
 
 img:hover {
-    height: 305px;
-    width: 305px;
-    filter: drop-shadow(0 0 10px #76767f);
+    transform: scale(1.05);
+    box-shadow: 0px 1px 50px rgba(0, 0, 0, 0.15);
 }
 
 .img-p-unit {
-    margin-right: 2%;
+    margin-right: 4%;
 }
 
 #modal-outer {

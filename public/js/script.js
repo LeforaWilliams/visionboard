@@ -81,6 +81,7 @@
                     app.lastDataId = res.data.id;
                     for (var i = 0; i < res.data.images.length; i++) {
                         app.images.push(res.data.images[i]);
+                        app.images.pop();
                         console.log("PUSHED");
                     }
                     // if (app.lastId == lastid) {
