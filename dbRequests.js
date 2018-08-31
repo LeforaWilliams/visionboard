@@ -7,7 +7,7 @@ const db = spicedPg(dbUrl);
 module.exports.getImages = function() {
     return db.query(`SELECT * FROM images
         ORDER BY id DESC
-        LIMIT 10`);
+        LIMIT 2`);
 };
 
 module.exports.getMoreImages = function(lastImageId) {
@@ -15,14 +15,19 @@ module.exports.getMoreImages = function(lastImageId) {
         `SELECT * FROM images
         WHERE id < $1
         ORDER BY id DESC
-        LIMIT 10`,
+        LIMIT 2`,
         [lastImageId]
     );
 };
 
-//write new rouote for more button
-// how to know you checkd the end--> find id of first image from // DB
-// SELECT id FROM images ORDER BY id ASC LIMIT 1
+// `SELECT title, image, (
+//     SELECT id FROM images
+//     ORDER BY id ASC LIMIT 1
+//     as last_id FROM images WHERE id = 3)`;
+
+module.exports.checkWhichImgIsLastOnPage = function() {
+    return db.query(`SELECT id FROM images ORDER BY id ASC LIMIT 1`);
+};
 
 module.exports.saveFile = function(url, username, title, description) {
     return db.query(

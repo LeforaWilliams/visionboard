@@ -5,7 +5,9 @@ const {
     saveFile,
     getModalImage,
     saveComment,
-    getComments
+    getComments,
+    getMoreImages,
+    checkWhichImgIsLastOnPage
 } = require("./dbRequests");
 const s3 = require("./s3.js");
 const config = require("./config.json");
@@ -76,7 +78,6 @@ app.get("/image/:id", (req, res) => {
 });
 
 app.post("/comments/:id", (req, res) => {
-    console.log("IMAGE ID IN COMMENTS POST ROUTE- SERVER", req.params.id);
     saveComment(req.params.id, req.body.comment, req.body.username)
         .then(function(commentInfo) {
             res.json(commentInfo.rows);
@@ -95,6 +96,15 @@ app.get("/comments/:id", (req, res) => {
         .catch(function(err) {
             console.log("ERROR IN GET COMMENTS ON SERVER", err);
             res.sendStatus(500);
+        });
+});
+app.get("/get-more-images/:id", (req, res) => {
+    getMoreImages(req.params.id)
+        .then(function(result) {
+            res.json(result.rows);
+        })
+        .catch(function(err) {
+            console.log(err);
         });
 });
 

@@ -62,25 +62,32 @@
                 username: "",
                 description: ""
             },
-            show: null
+            show: null,
+            moreImages: true,
+            lastId: null
         },
         mounted: function() {
-            // When the modal component mounts, at least one ajax request will have to be made.
-            // this is making a request to the server so the server can talk to the db
             axios.get("/images").then(function(res) {
                 app.images = res.data;
             });
         },
 
         methods: {
+            showMore: function() {
+                var lastid = this.images[this.images.length - 1].id;
+                axios.get("/get-more-images/" + lastid).then(function(res) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        app.images.push(res.data[i]);
+                    }
+                    if (res.data.length <= 2) {
+                        app.moreImages = false;
+                    }
+                });
+            },
             hide: function() {
                 this.show = null;
             },
             showImage: function(imageSerialId) {
-                // console.log(
-                //     "CLICKED ON THE IMAGE AND RETRIEVED THE IMAGE SERIAL ID",
-                //     imageSerialId
-                // );
                 this.show = imageSerialId;
             },
             uploadFile: function(e) {
