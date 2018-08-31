@@ -64,11 +64,12 @@
             },
             show: null,
             moreImages: true,
-            lastId: null
+            lastDataId: null
         },
         mounted: function() {
             axios.get("/images").then(function(res) {
-                app.images = res.data;
+                app.images = res.data.images;
+                app.lastDataId = res.data.id;
             });
         },
 
@@ -76,12 +77,15 @@
             showMore: function() {
                 var lastid = this.images[this.images.length - 1].id;
                 axios.get("/get-more-images/" + lastid).then(function(res) {
-                    for (var i = 0; i < res.data.length; i++) {
-                        app.images.push(res.data[i]);
+                    console.log("RES IN SCRIPTJS MORE IMAGES", res.data.id);
+                    app.lastDataId = res.data.id;
+                    for (var i = 0; i < res.data.images.length; i++) {
+                        app.images.push(res.data.images[i]);
+                        console.log("PUSHED");
                     }
-                    if (res.data.length <= 2) {
-                        app.moreImages = false;
-                    }
+                    // if (app.lastId == lastid) {
+                    //     app.moreImages = false;
+                    // }
                 });
             },
             hide: function() {

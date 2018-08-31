@@ -42,9 +42,16 @@ app.use(express.static("./public"));
 
 app.get("/images", (req, res) => {
     //make request.then send it back to vue
-    getImages().then(function(data) {
-        res.json(data.rows);
-    });
+    // getImages().then(function(data) {
+    //     res.json(data.rows);
+    // });
+    return Promise.all([getImages(req.params.id), checkWhichImgIsLastOnPage()])
+        .then(function([nextImages, lastId]) {
+            res.json({ images: nextImages.rows, id: lastId.rows[0].id });
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
 });
 
 app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
@@ -99,13 +106,24 @@ app.get("/comments/:id", (req, res) => {
         });
 });
 app.get("/get-more-images/:id", (req, res) => {
-    getMoreImages(req.params.id)
-        .then(function(result) {
-            res.json(result.rows);
+    return Promise.all([
+        getMoreImages(req.params.id),
+        checkWhichImgIsLastOnPage()
+    ])
+        .then(function([nextImages, lastId]) {
+            res.json({ images: nextImages.rows, id: lastId.rows[0].id });
         })
         .catch(function(err) {
             console.log(err);
         });
+
+    // getMoreImages(req.params.id)
+    //     .then(function(result) {
+    //         res.json(result.rows);
+    //     })
+    //     .catch(function(err) {
+    //         console.log(err);
+    //     });
 });
 
 app.listen(8080, () => console.log(`I'm listening`));

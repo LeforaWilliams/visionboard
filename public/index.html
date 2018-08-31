@@ -26,8 +26,8 @@
 
         </div>
         <modal :id='show' v-if="show" v-on:close='hide'></modal>
-
-        <button v-if='moreImages' @click='showMore' type="button" name="button">Show more</button>
+<!-- v-if='images[images.length-1].is !=lastDataId' -->
+        <button v-if='images[images.length-1].id !=lastDataId' @click='showMore' type="button" name="button">Show more</button>
     </div>
 
 <script id='modal-template' type="text/template">
