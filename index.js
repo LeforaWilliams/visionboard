@@ -80,6 +80,7 @@ app.get("/image/:id", (req, res) => {
                 "ERROR FROM CATCH IN GET IMAGE FOR MODAL ROUTE ON SERVER",
                 err
             );
+            res.json();
             res.sendStatus(500);
         });
 });

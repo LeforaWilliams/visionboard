@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <div class="imageboard-wrap flex-container" v-if='images.length > 0'>
+    <div class="imageboard-wrap" v-if='images.length > 0'>
         <h1>Visionboard</h1>
         <!-- FOR IMAGE UPLOAD -->
         <form class="image-upload-form">
@@ -20,13 +20,18 @@
             <button v-on:click='uploadFile' type="button" name="upload-button">Upload</button>
 
         </form>
-        <div v-for='image in images'class="img-p-unit">
-            <img  :src="image.url" alt="" v-on:click='showImage(image.id)'>
-            <p>{{image.title}}</p>
-
+        <div class="flex-container">
+            <div v-for='image in images'class="img-p-unit">
+            <a :href="'#' + image.id">   <img  :src="image.url" alt="" v-on:click='showImage(image.id)'></a>
+                <p>{{image.title}}</p>
+                <!-- <a class="imglink" >
+                your image here
+                </a> -->
+            </div>
         </div>
+
         <modal :id='show' v-if="show" v-on:close='hide'></modal>
-<!-- v-if='images[images.length-1].is !=lastDataId' -->
+
         <button v-if='images[images.length-1].id !=lastDataId' @click='showMore' type="button" name="button">Show more</button>
     </div>
 

@@ -10,7 +10,11 @@
         mounted: function() {
             var modal = this;
             axios.get("/image/" + this.id).then(function(res) {
-                modal.image = res.data;
+                if (!res.data) {
+                    modal.hideModal();
+                } else {
+                    modal.image = res.data;
+                }
             });
         },
         props: ["id"],
@@ -18,6 +22,20 @@
         methods: {
             hideModal: function() {
                 this.$emit("close");
+            }
+        },
+        watch: {
+            // NEED TO GO OVER THIS KID AGAIN
+            id: function() {
+                var modal = this;
+                axios.get("/image/" + this.id).then(function(res) {
+                    modal.image = res.data;
+                    if (!res.data) {
+                        modal.hideModal();
+                    } else {
+                        modal.image = res.data;
+                    }
+                });
             }
         }
     });
@@ -50,6 +68,14 @@
                         component.comments.unshift(res.data[0]);
                     });
             }
+        },
+        watch: {
+            id: function() {
+                var component = this;
+                axios.get("/comments/" + this.id).then(function(res) {
+                    component.comments = res.data;
+                });
+            }
         }
     });
 
@@ -62,7 +88,7 @@
                 username: "",
                 description: ""
             },
-            show: null,
+            show: location.hash.length > 1 && location.hash.slice(1),
             moreImages: true,
             lastDataId: null
         },
@@ -71,18 +97,18 @@
                 app.images = res.data.images;
                 app.lastDataId = res.data.id;
             });
+            addEventListener("hashchange", function() {
+                app.show = location.hash.slice(1);
+            });
         },
 
         methods: {
             showMore: function() {
                 var lastid = this.images[this.images.length - 1].id;
                 axios.get("/get-more-images/" + lastid).then(function(res) {
-                    console.log("RES IN SCRIPTJS MORE IMAGES", res.data.id);
                     app.lastDataId = res.data.id;
                     for (var i = 0; i < res.data.images.length; i++) {
                         app.images.push(res.data.images[i]);
-                        app.images.pop();
-                        console.log("PUSHED");
                     }
                     // if (app.lastId == lastid) {
                     //     app.moreImages = false;
@@ -91,6 +117,7 @@
             },
             hide: function() {
                 this.show = null;
+                location.hash = "";
             },
             showImage: function(imageSerialId) {
                 this.show = imageSerialId;
@@ -111,6 +138,11 @@
                 axios.post("/upload", formData).then(function(res) {
                     console.log("Response in Post /upload in script.js: ", res);
                     app.images.unshift(res.data[0]);
+                    app.images.pop();
+                    app.form.title = "";
+                    app.form.username = "";
+                    app.form.description = "";
+                    file = "";
                 });
             } //UPLOADFILE FUNTION END
         } // METHODS END

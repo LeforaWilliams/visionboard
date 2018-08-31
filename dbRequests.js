@@ -7,7 +7,7 @@ const db = spicedPg(dbUrl);
 module.exports.getImages = function() {
     return db.query(`SELECT * FROM images
         ORDER BY id DESC
-        LIMIT 10`);
+        LIMIT 6`);
 };
 
 module.exports.getMoreImages = function(lastImageId) {
@@ -15,7 +15,7 @@ module.exports.getMoreImages = function(lastImageId) {
         `SELECT * FROM images
         WHERE id < $1
         ORDER BY id DESC
-        LIMIT 10`,
+        LIMIT 6`,
         [lastImageId]
     );
 };
@@ -34,7 +34,7 @@ module.exports.saveFile = function(url, username, title, description) {
         `INSERT INTO
         images (url, username, title, description) VALUES($1, $2, $3, $4) RETURNING id, url, username, title, description, created_at
         `,
-        [url, username, title, description]
+        [url || null, username || null, title || null, description || null]
     );
 };
 
