@@ -20,26 +20,6 @@ module.exports.getMoreImages = function(lastImageId) {
     );
 };
 
-module.exports.previousImage = function(lastImageId) {
-    return db.query(
-        `SELECT * FROM images 
-        WHERE id is < $1
-        ORDER BY id DESC 
-        LIMIT 1`,
-        [lastImageId]
-    );
-};
-
-module.exports.nextImage = function(lastImageId) {
-    return db.query(
-        `SELECT * FROM images 
-        WHERE id is > $1
-        ORDER BY id DESC 
-        LIMIT 1`,
-        [lastImageId]
-    );
-};
-
 // `SELECT title, image, (
 //     SELECT id FROM images
 //     ORDER BY id ASC LIMIT 1
@@ -58,8 +38,27 @@ module.exports.saveFile = function(url, username, title, description) {
     );
 };
 
-module.exports.getModalImage = function(serialId) {
-    return db.query(`SELECT * FROM images WHERE id=$1`, [serialId]);
+module.exports.getModalImage = function(serialImageId) {
+    return db.query(`SELECT * FROM images WHERE id=$1`, [serialImageId]);
+};
+
+module.exports.previousImage = function(serialImageId) {
+    return db.query(
+        `SELECT * FROM images
+        WHERE id > $1
+        LIMIT 1`,
+        [serialImageId]
+    );
+};
+
+module.exports.nextImage = function(serialImageId) {
+    return db.query(
+        `SELECT * FROM images
+        WHERE id < $1
+        ORDER BY id DESC 
+        LIMIT 1`,
+        [serialImageId]
+    );
 };
 
 module.exports.saveComment = function(imageId, comment, username) {

@@ -43,10 +43,6 @@ let uploader = multer({
 app.use(express.static("./public"));
 
 app.get("/images", (req, res) => {
-    //make request.then send it back to vue
-    // getImages().then(function(data) {
-    //     res.json(data.rows);
-    // });
     return Promise.all([getImages(req.params.id), checkWhichImgIsLastOnPage()])
         .then(function([nextImages, lastId]) {
             res.json({ images: nextImages.rows, id: lastId.rows[0].id });
@@ -73,9 +69,26 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
 });
 
 app.get("/image/:id", (req, res) => {
-    getModalImage(req.params.id)
-        .then(function(image) {
-            res.json(image.rows[0]);
+    return Promise.all([
+        getModalImage(req.params.id),
+        previousImage(req.params.id),
+        nextImage(req.params.id)
+    ])
+        .then(function([image, previous, next]) {
+            console.log(
+                "LOGGING RESPONSE FROM THEN ",
+                "IMAGE>>>>>>",
+                image,
+                "PREVIOUS IMGAE>>>>>>",
+                previous,
+                "NEXT IMAGE>>>>>>>>",
+                next
+            );
+            res.json({
+                singleImage: image.rows[0],
+                previousImage: previous.rows[0],
+                nextImage: next.rows[0]
+            });
         })
         .catch(function(err) {
             console.log(

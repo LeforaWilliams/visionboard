@@ -4,16 +4,28 @@
         //data has to be a function here otherwise it will affect al of them at once
         data: function() {
             return {
-                image: {}
+                image: {},
+                previous: {},
+                next: {}
             };
         },
         mounted: function() {
             var modal = this;
             axios.get("/image/" + this.id).then(function(res) {
+                console.log(
+                    "CURRENT",
+                    res.data.singleImage,
+                    "NEXT",
+                    res.data.nextImage,
+                    "PREVIOUS",
+                    res.data.previousImage
+                );
                 if (!res.data) {
                     modal.hideModal();
                 } else {
-                    modal.image = res.data;
+                    modal.image = res.data.singleImage;
+                    modal.next = res.data.nextImage;
+                    modal.previous = res.data.previousImage;
                 }
             });
         },
@@ -95,7 +107,9 @@
             show: location.hash.length > 1 && location.hash.slice(1),
             moreImages: true,
             lastDataId: null,
-            isBlurred: false
+            isBlurred: false,
+            next: location.hash.length > 1 && location.hash.slice(1),
+            previous: location.hash.length > 1 && location.hash.slice(1)
         },
         mounted: function() {
             axios.get("/images").then(function(res) {
@@ -127,8 +141,8 @@
                 this.isBlurred = true;
             },
 
-            previousImage: function(imageSerialId) {
-                this.show = imageSerialId - 1;
+            previousImage: function(previous) {
+                location.hash = previous;
             },
 
             uploadFile: function(e) {

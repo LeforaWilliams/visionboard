@@ -49,7 +49,8 @@
             <img  :src='image.url'>
             <p>{{image.description}}</p>
             <p>Posted on: {{image.created_at}} by {{image.username}} </p>
-        <p v-on:click='emitPrevious'>Previous Image</p>
+            <a :href="'#' + next.id"><p>Next Image</p></a>
+            <a :href="'#' + previous.id"><p>Previous Image</p></a>
 
             <comments :id='id'></comments>
             </div>
