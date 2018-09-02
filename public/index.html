@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <div class="imageboard-wrap" v-if='images.length > 0'>
+    <div class="imageboard-wrap" v-if='images.length > 0' >
         <h1>Visionboard</h1>
         <!-- FOR IMAGE UPLOAD -->
         <form class="image-upload-form">
@@ -17,34 +17,45 @@
             <input v-model ='form.username' type="text" name="username" value="" placeholder="Username">
 
             <input type="file" accept='image/*'>
-            <button v-on:click='uploadFile' type="button" name="upload-button">Upload</button>
+            <button
+            v-on:click='uploadFile'
+            type="button"
+            name="upload-button">Upload</button>
 
         </form>
-        <div class="flex-container">
+        <div class="flex-container" :class='{blur: isBlurred}' >
             <div v-for='image in images'class="img-p-unit">
-            <a :href="'#' + image.id">   <img  :src="image.url" alt="" v-on:click='showImage(image.id)'></a>
+            <a :href="'#' + image.id">
+                <img :src="image.url" alt="Selected image from imageboard" v-on:click='blur'>
+             </a>
                 <p>{{image.title}}</p>
-                <!-- <a class="imglink" >
-                your image here
-                </a> -->
             </div>
         </div>
 
-        <modal :id='show' v-if="show" v-on:close='hide'></modal>
+        <modal :id='show'
+        v-if="show"
+        v-on:close='hide'>
+        </modal>
 
         <button v-if='images[images.length-1].id !=lastDataId' @click='showMore' type="button" name="button">Show more</button>
     </div>
 
 <script id='modal-template' type="text/template">
-    <div id='modal-outer'>
-    	<h1>This is the script for the modal component!</h1>
-        <p  v-on:click='hideModal'> c l o s e </p>
-        <p>{{image.title}}</p>
-        <img  :src='image.url'>
-        <p>{{image.description}}</p>
-        <p>Posted on: {{image.created_at}} by {{image.username}} </p>
-        <comments :id='id'></comments>
-    </div>
+
+        <div id='modal-outer'>
+            <div >
+        	<h1>{{image.title}}</h1>
+            <p  v-on:click='hideModal'> c l o s e </p>
+            <img  :src='image.url'>
+            <p>{{image.description}}</p>
+            <p>Posted on: {{image.created_at}} by {{image.username}} </p>
+        <p v-on:click='emitPrevious'>Previous Image</p>
+
+            <comments :id='id'></comments>
+            </div>
+        </div>
+
+
 </script>
 
 <script id='comments-template' type="text/template">

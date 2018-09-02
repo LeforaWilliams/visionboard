@@ -22,6 +22,9 @@
         methods: {
             hideModal: function() {
                 this.$emit("close");
+            },
+            emitPrevious: function() {
+                this.$emit("close");
             }
         },
         watch: {
@@ -88,9 +91,11 @@
                 username: "",
                 description: ""
             },
+            //when the modal is closed, show was set to null, now the number after the has is sliced away
             show: location.hash.length > 1 && location.hash.slice(1),
             moreImages: true,
-            lastDataId: null
+            lastDataId: null,
+            isBlurred: false
         },
         mounted: function() {
             axios.get("/images").then(function(res) {
@@ -110,18 +115,22 @@
                     for (var i = 0; i < res.data.images.length; i++) {
                         app.images.push(res.data.images[i]);
                     }
-                    // if (app.lastId == lastid) {
-                    //     app.moreImages = false;
-                    // }
                 });
             },
             hide: function() {
                 this.show = null;
                 location.hash = "";
+                this.isBlurred = null;
             },
-            showImage: function(imageSerialId) {
-                this.show = imageSerialId;
+
+            blur: function() {
+                this.isBlurred = true;
             },
+
+            previousImage: function(imageSerialId) {
+                this.show = imageSerialId - 1;
+            },
+
             uploadFile: function(e) {
                 e.preventDefault();
                 // console.log("vue instance", this.form);
@@ -142,7 +151,6 @@
                     app.form.title = "";
                     app.form.username = "";
                     app.form.description = "";
-                    file = "";
                 });
             } //UPLOADFILE FUNTION END
         } // METHODS END

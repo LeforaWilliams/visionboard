@@ -7,7 +7,9 @@ const {
     saveComment,
     getComments,
     getMoreImages,
-    checkWhichImgIsLastOnPage
+    checkWhichImgIsLastOnPage,
+    previousImage,
+    nextImage
 } = require("./dbRequests");
 const s3 = require("./s3.js");
 const config = require("./config.json");

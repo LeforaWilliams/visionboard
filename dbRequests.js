@@ -20,6 +20,26 @@ module.exports.getMoreImages = function(lastImageId) {
     );
 };
 
+module.exports.previousImage = function(lastImageId) {
+    return db.query(
+        `SELECT * FROM images 
+        WHERE id is < $1
+        ORDER BY id DESC 
+        LIMIT 1`,
+        [lastImageId]
+    );
+};
+
+module.exports.nextImage = function(lastImageId) {
+    return db.query(
+        `SELECT * FROM images 
+        WHERE id is > $1
+        ORDER BY id DESC 
+        LIMIT 1`,
+        [lastImageId]
+    );
+};
+
 // `SELECT title, image, (
 //     SELECT id FROM images
 //     ORDER BY id ASC LIMIT 1
