@@ -1,13 +1,15 @@
 <!doctype html>
 <html>
 <head>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <title>Visionboard</title>
 </head>
 <body>
 
     <div class="imageboard-wrap" v-if='images.length > 0' >
-        <h1>Visionboard</h1>
+
+        <a class='top-link' href='#'><h1>V B</h1></a>
         <!-- FOR IMAGE UPLOAD -->
         <form class="image-upload-form">
             <input v-model ='form.title' type="text" name="title" placeholder="Title" value="">
@@ -34,7 +36,8 @@
 
         <modal :id='show'
         v-if="show"
-        v-on:close='hide'>
+        v-on:close='hide'
+        v-on:previous='previousImage(previous.id)'>
         </modal>
 
         <button v-if='images[images.length-1].id !=lastDataId' @click='showMore' type="button" name="button">Show more</button>
@@ -42,17 +45,24 @@
 
 <script id='modal-template' type="text/template">
 
-        <div id='modal-outer'>
+        <div id='modal-outer' >
             <div >
-        	<h1>{{image.title}}</h1>
-            <p  v-on:click='hideModal'> c l o s e </p>
-            <img  :src='image.url'>
-            <p>{{image.description}}</p>
-            <p>Posted on: {{image.created_at}} by {{image.username}} </p>
-            <a :href="'#' + next.id"><p>Next Image</p></a>
-            <a :href="'#' + previous.id"><p>Previous Image</p></a>
 
+            <p class='modal-close'  v-on:click='hideModal'> X </p>
+            <div class='modal-image wrap'>
+                <img class='modal-image'  :src='image.url'>
+
+                <h1 id='modal-headline'>{{image.title}}</h1>
+                <p id='modal-description'>{{image.description}}</p>
+                <p id='modal-image-created'>Posted on: {{image.created_at}} by {{image.username}} </p>
+            </div>
             <comments :id='id'></comments>
+
+            <a id='next-button'  :href="'#' + next.id"  ><p>Next Image</p></a>
+
+            <a id='prev-button' :href="'#' + previous.id" ><p>Previous Image</p></a>
+
+
             </div>
         </div>
 

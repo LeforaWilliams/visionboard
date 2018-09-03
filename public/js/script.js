@@ -24,8 +24,8 @@
                     modal.hideModal();
                 } else {
                     modal.image = res.data.singleImage;
-                    modal.next = res.data.nextImage;
-                    modal.previous = res.data.previousImage;
+                    modal.next = res.data.nextImage || {};
+                    modal.previous = res.data.previousImage || {};
                 }
             });
         },
@@ -36,7 +36,7 @@
                 this.$emit("close");
             },
             emitPrevious: function() {
-                this.$emit("close");
+                this.$emit("previous");
             }
         },
         watch: {
@@ -48,7 +48,9 @@
                     if (!res.data) {
                         modal.hideModal();
                     } else {
-                        modal.image = res.data;
+                        modal.image = res.data.singleImage;
+                        modal.next = res.data.nextImage || {};
+                        modal.previous = res.data.previousImage || {};
                     }
                 });
             }
@@ -81,6 +83,8 @@
                     .post("/comments/" + this.id, this.form)
                     .then(function(res) {
                         component.comments.unshift(res.data[0]);
+                        component.form.comment = "";
+                        component.form.username = "";
                     });
             }
         },
@@ -107,9 +111,9 @@
             show: location.hash.length > 1 && location.hash.slice(1),
             moreImages: true,
             lastDataId: null,
-            isBlurred: false,
-            next: location.hash.length > 1 && location.hash.slice(1),
-            previous: location.hash.length > 1 && location.hash.slice(1)
+            isBlurred: false
+            // next: location.hash.length > 1 && location.hash.slice(1),
+            // previous: location.hash.length > 1 && location.hash.slice(1)
         },
         mounted: function() {
             axios.get("/images").then(function(res) {
@@ -143,6 +147,10 @@
 
             previousImage: function(previous) {
                 location.hash = previous;
+            },
+
+            nextImage: function(next) {
+                location.hash = next;
             },
 
             uploadFile: function(e) {
